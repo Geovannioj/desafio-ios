@@ -9,7 +9,8 @@
 import Foundation
 
 enum LocalizableStrings: String {
-    case projectName
+    case date
+    case copyright
     
     func localized() -> String {
         rawValue.localized()
