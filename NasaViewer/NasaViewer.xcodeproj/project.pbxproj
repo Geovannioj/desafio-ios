@@ -20,7 +20,7 @@
 		D43FA87A25D80D1F00F460A2 /* NasaViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA87925D80D1F00F460A2 /* NasaViewerUITests.swift */; };
 		D43FA88C25D810F100F460A2 /* AstronomyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA88B25D810F100F460A2 /* AstronomyModel.swift */; };
 		D43FA88E25D812A900F460A2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA88D25D812A900F460A2 /* NetworkManager.swift */; };
-		D43FA89025D8180A00F460A2 /* AnatomyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA88F25D8180A00F460A2 /* AnatomyViewModel.swift */; };
+		D43FA89025D8180A00F460A2 /* AstronomyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA88F25D8180A00F460A2 /* AstronomyViewModel.swift */; };
 		D43FA89325D8186C00F460A2 /* LocalizableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA89225D8186C00F460A2 /* LocalizableString.swift */; };
 		D43FA89525D8188400F460A2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D43FA89425D8188400F460A2 /* Localizable.strings */; };
 		D43FA89925D818BA00F460A2 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FA89825D818BA00F460A2 /* String.swift */; };
@@ -71,7 +71,7 @@
 		D43FA87B25D80D1F00F460A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D43FA88B25D810F100F460A2 /* AstronomyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstronomyModel.swift; sourceTree = "<group>"; };
 		D43FA88D25D812A900F460A2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		D43FA88F25D8180A00F460A2 /* AnatomyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnatomyViewModel.swift; sourceTree = "<group>"; };
+		D43FA88F25D8180A00F460A2 /* AstronomyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstronomyViewModel.swift; sourceTree = "<group>"; };
 		D43FA89225D8186C00F460A2 /* LocalizableString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizableString.swift; sourceTree = "<group>"; };
 		D43FA89425D8188400F460A2 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		D43FA89825D818BA00F460A2 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 		D43FA88925D8104500F460A2 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				D43FA88F25D8180A00F460A2 /* AnatomyViewModel.swift */,
+				D43FA88F25D8180A00F460A2 /* AstronomyViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -500,7 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D43FA89025D8180A00F460A2 /* AnatomyViewModel.swift in Sources */,
+				D43FA89025D8180A00F460A2 /* AstronomyViewModel.swift in Sources */,
 				D43FA88C25D810F100F460A2 /* AstronomyModel.swift in Sources */,
 				D43FA85C25D80D1E00F460A2 /* ViewController.swift in Sources */,
 				D43FA88E25D812A900F460A2 /* NetworkManager.swift in Sources */,

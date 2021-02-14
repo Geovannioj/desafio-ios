@@ -21,6 +21,8 @@ class AstronomyTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        dateLbl.text = LocalizableStrings.date.localized()
+        copyrightLbl.text = LocalizableStrings.copyright.localized()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

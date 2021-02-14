@@ -9,9 +9,36 @@
 import Foundation
 
 class Bindable<T> {
-    var value: T? {
+    
+    typealias BindType = ((T) -> Void)
+    
+    var binds: [BindType] = []
+    
+    var value: T {
         didSet {
-            observer?(value)
+            execBinds()
+        }
+    }
+    
+    init(_ val: T) {
+        value = val
+    }
+    
+    func bind(skip: Bool = false, _ bind: @escaping BindType) {
+        binds.append(bind)
+        guard skip else {
+            bind(value)
+            return
+        }
+    }
+    
+    func remove() {
+        _ = binds.popLast()
+    }
+    
+    private func execBinds() {
+        binds.forEach { [unowned self] bind in
+            bind(self.value)
         }
     }
     

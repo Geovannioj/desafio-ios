@@ -8,30 +8,72 @@
 
 import Foundation
 
-protocol AnatomyViewModelProtocol {
-    var astronomyModel: Bindable<AstronomyModel>? { get }
+protocol AstronomyViewModelProtocol {
+    var astronomyModel: AstronomyModel? { get }
+    var networkManager: NetworkManagerProtocol { get }
+    var imgData: Data? { get }
     
-    func formatDate() -> String
+    func requestData(completionHandler: @escaping (ResultStatus) -> Void)
+    func getFormattedDate() -> String
+    func getTitle() -> String
+    func getExplanation() -> String
+    func getCopyright() -> String
+
 }
 
-class AnatomyViewModel: AnatomyViewModelProtocol {
-
+class AstronomyViewModel: AstronomyViewModelProtocol {
     
-    var astronomyModel: Bindable<AstronomyModel>?
+    var astronomyModel: AstronomyModel?
+    var networkManager: NetworkManagerProtocol = NetworkManager()
+    var imgData: Data?
     
-    func formatDate() -> String {
-        let dateFormatterGet = DateFormatter()
-        dateFormatterGet.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    func requestData(completionHandler: @escaping (ResultStatus) -> Void) {
+        networkManager.requestData(dateStr: "2021-02-14") { [weak self] (resultStatus, model) in
+            if resultStatus == .success {
+                self?.astronomyModel = model
+                let url = URL(string: model?.url ?? String())
+                DispatchQueue.global().async {
+                    let data = try? Data(contentsOf: url!)
+                    self?.imgData = data
+                    self?.astronomyModel? = model!
+                    completionHandler(.success)
+                }
+            } else {
+                completionHandler(.failure)
+                print("ERROR on thre request")
+            }
+        }
+    }
+    
+    func getCopyright() -> String {
+        return astronomyModel?.copyright ?? String()
+    }
+    
+    func getExplanation() -> String {
+        return astronomyModel?.explanation ?? String()
+    }
+    
+    func getTitle() -> String {
+        return astronomyModel?.title ?? String()
+    }
+    
+    func getFormattedDate() -> String {
+        var outputDate = String()
+        
+        let dateFormatterInput = DateFormatter()
+        dateFormatterInput.dateFormat = "yyyy-MM-dd"
 
-        let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "MMM dd,yyyy"
+        let dateFormatterOutput = DateFormatter()
+        dateFormatterOutput.dateFormat = "dd MMM, yyyy"
 
-        if let date = dateFormatterGet.date(from: "2016-02-29 12:24:26") {
-            print(dateFormatterPrint.string(from: date))
+        if let date = dateFormatterInput.date(from: "2016-02-29") {
+            outputDate = dateFormatterOutput.string(from: date)
+            print(dateFormatterOutput.string(from: date))
         } else {
-           print("There was an error decoding the string")
+            print("There was an error decoding the string")
+            outputDate = "########"
         }
         
-        return String()
+        return outputDate
     }
 }

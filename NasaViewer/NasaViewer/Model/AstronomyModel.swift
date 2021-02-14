@@ -18,6 +18,7 @@ struct AstronomyModel: Codable {
     var title: String
     var url: String
     
+    
     enum CodingKeys: String, CodingKey {
         case copyright
         case date
