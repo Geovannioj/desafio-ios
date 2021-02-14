@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Alamofire
 
 class NetworkManager {
     var result: AstronomyModel?
@@ -23,7 +24,20 @@ class NetworkManager {
     "url": "https://apod.nasa.gov/apod/image/2102/00Cygnus_Visual_colors1100.jpg"
 }
 """
-    
+    func requestData(dateStr: String = "2021-02-11") {
+        
+        let parameters = ["api_key": "DEMO_KEY",
+                          "date": dateStr]
+        
+        AF.request("https://api.nasa.gov/planetary/apod?",
+                   method: .get,
+                   parameters: parameters).responseDecodable(of: AstronomyModel.self) { (response) in
+            guard let astronomyContent = response.value else { return }
+            self.result = astronomyContent
+                    
+        }
+    }
+
     public func parseData() {
         let decoder = JSONDecoder()
         let jsonData = JSON.data(using: .utf8)!
