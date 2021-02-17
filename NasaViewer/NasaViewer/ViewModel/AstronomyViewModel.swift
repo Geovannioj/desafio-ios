@@ -10,32 +10,35 @@ import Foundation
 
 protocol AstronomyViewModelProtocol {
     var astronomyModel: AstronomyModel? { get }
+    var astros: [AstronomyModel]? { get }
     var networkManager: NetworkManagerProtocol { get }
     var imgData: Data? { get }
     
-    func requestData(completionHandler: @escaping (ResultStatus) -> Void)
-    func getFormattedDate() -> String
-    func getTitle() -> String
-    func getExplanation() -> String
-    func getCopyright() -> String
-
+    func requestData(contentOf: String, completionHandler: @escaping (ResultStatus) -> Void)
+    func getFormattedDate(inputDateStr: String) -> String
+    func getSpecificDate(daysFromNow: Int) -> String
+    
 }
 
 class AstronomyViewModel: AstronomyViewModelProtocol {
     
     var astronomyModel: AstronomyModel?
+    var astros: [AstronomyModel]? = [AstronomyModel]()
     var networkManager: NetworkManagerProtocol = NetworkManager()
     var imgData: Data?
     
-    func requestData(completionHandler: @escaping (ResultStatus) -> Void) {
-        networkManager.requestData(dateStr: "2021-02-14") { [weak self] (resultStatus, model) in
+    
+    func requestData(contentOf: String, completionHandler: @escaping (ResultStatus) -> Void) {
+        networkManager.requestData(dateStr: contentOf) { [weak self] (resultStatus, model) in
             if resultStatus == .success {
                 self?.astronomyModel = model
                 let url = URL(string: model?.url ?? String())
                 DispatchQueue.global().async {
-                    let data = try? Data(contentsOf: url!)
+                    guard let url = url else { return }
+                    let data = try? Data(contentsOf: url)
                     self?.imgData = data
                     self?.astronomyModel? = model!
+                    self?.astros?.append(model!)
                     completionHandler(.success)
                 }
             } else {
@@ -45,19 +48,7 @@ class AstronomyViewModel: AstronomyViewModelProtocol {
         }
     }
     
-    func getCopyright() -> String {
-        return astronomyModel?.copyright ?? String()
-    }
-    
-    func getExplanation() -> String {
-        return astronomyModel?.explanation ?? String()
-    }
-    
-    func getTitle() -> String {
-        return astronomyModel?.title ?? String()
-    }
-    
-    func getFormattedDate() -> String {
+    func getFormattedDate(inputDateStr: String) -> String {
         var outputDate = String()
         
         let dateFormatterInput = DateFormatter()
@@ -66,9 +57,9 @@ class AstronomyViewModel: AstronomyViewModelProtocol {
         let dateFormatterOutput = DateFormatter()
         dateFormatterOutput.dateFormat = "dd MMM, yyyy"
 
-        if let date = dateFormatterInput.date(from: "2016-02-29") {
+        if let date = dateFormatterInput.date(from: inputDateStr) {
             outputDate = dateFormatterOutput.string(from: date)
-            print(dateFormatterOutput.string(from: date))
+            
         } else {
             print("There was an error decoding the string")
             outputDate = "########"
@@ -76,4 +67,24 @@ class AstronomyViewModel: AstronomyViewModelProtocol {
         
         return outputDate
     }
+    
+    func getSpecificDate(daysFromNow: Int) -> String {
+        
+        let secondsInDay = 86400
+        let secondsSince1970 = Date().timeIntervalSince1970
+        let secondsToSubtract = TimeInterval(secondsInDay * daysFromNow)
+        let secondsToGetDate = secondsSince1970 - secondsToSubtract
+        
+        let date = Date(timeIntervalSince1970: secondsToGetDate)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM dd YYYY hh:mm a"
+
+        let dateFormatterOutput = DateFormatter()
+        dateFormatterOutput.dateFormat = "yyyy-MM-dd"
+
+        let outputDate = dateFormatterOutput.string(from: date)
+        return outputDate
+    }
+    
 }

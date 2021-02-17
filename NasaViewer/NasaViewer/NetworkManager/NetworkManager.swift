@@ -24,7 +24,7 @@ class NetworkManager: NetworkManagerProtocol {
     
     var result: AstronomyModel?
     
-    func requestData(dateStr: String = "2021-02-11", completionHandler: @escaping ((ResultStatus,AstronomyModel?) -> Void)) {
+    func requestData(dateStr: String, completionHandler: @escaping ((ResultStatus,AstronomyModel?) -> Void)) {
         
         let parameters = ["api_key": "DEMO_KEY",
                           "date": dateStr]

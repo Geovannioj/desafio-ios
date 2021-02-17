@@ -11,48 +11,32 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
-//    var netMa = NetworkManager()
+
     var astronomy: AstronomyModel?
     var viewModel: AstronomyViewModelProtocol? = AstronomyViewModel()
     var imgData: Data?
+    var daysOffset: Int = 0
     let astronomyXibName = "AstronomyTableViewCell"
     let cellIdentifier = "cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setTableView()
-        viewModel?.requestData(completionHandler: { (result) in
+        guard let todayDate = viewModel?.getSpecificDate(daysFromNow: 0) else { return }
+        bindData(dataOfContent: todayDate)
+    }
+    
+    func bindData(dataOfContent: String) {
+        viewModel?.requestData(contentOf: dataOfContent, completionHandler: { (result) in
             if result == .success {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             } else {
-                
+
             }
         })
-//        let date1 = viewModel?.getFormattedDate()
-//        astronomy = netMa.result
-        
-//        netMa.requestData(dateStr: "2021-02-10") { [weak self] (resultStatus, model) in
-//            if resultStatus == .success {
-//                self?.astronomy = model
-//                let url = URL(string: self?.astronomy?.url ?? String())
-//                DispatchQueue.global().async {
-//                    let data = try? Data(contentsOf: url!)
-//                    self?.imgData = data
-//
-//                    DispatchQueue.main.async {
-//                        self?.tableView.reloadData()
-//                    }
-//                }
-//                self?.tableView.reloadData()
-//            } else {
-//                print("ERROR on thre requst")
-//            }
-//        }
     }
-    
     func setTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -62,7 +46,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return (viewModel?.astros?.count)! //self.astros?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -72,17 +56,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? AstronomyTableViewCell else { return UITableViewCell() }
         
-        cell.title.text = viewModel?.getTitle()//astronomy?.title
-        cell.dateContent.text = viewModel?.getFormattedDate()//astronomy?.date
+        cell.title.text = viewModel?.astros?[indexPath.row].title
+        cell.dateContent.text = viewModel?.getFormattedDate(inputDateStr: (viewModel?.astros?[indexPath.row].date)!)
         if let imgData = viewModel?.imgData {
             cell.imgView.image = UIImage(data: imgData)
         }
-        cell.copyrightContent.text = viewModel?.getCopyright()//astronomy?.copyright
-        cell.explanation.text = viewModel?.getExplanation()//astronomy?.explanation
+        cell.viewmodel = self.viewModel
+        cell.copyrightContent.text = viewModel?.astros?[indexPath.row].copyright
+        cell.explanation.text = viewModel?.astros?[indexPath.row].explanation
         
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if indexPath.row == (viewModel?.astros?.count)! - 1 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.daysOffset += 1
+                guard let specificDay = self.viewModel?.getSpecificDate(daysFromNow: self.daysOffset) else { return }
+                print("Requesting content of \(specificDay)")
+            
+                self.bindData(dataOfContent: specificDay)
+            }
+            
+        }
+    }
 }
 
